@@ -1,0 +1,35 @@
+.virtual-keyboard {
+  font-family: 'Montserrat', sans-serif;
+  font-size: 1.3rem;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+
+.keyboard-row {
+  display: flex;
+}
+
+.keyboard-key{
+  min-width: 40px;
+  min-height: 40px;
+  padding: 4px;
+  margin: 8px;
+  text-align: center;
+  line-height: 40px;
+  border: 1.5px solid gray;
+  border-radius: 5px;
+  background-color: lightgrey;
+}
+
+.shift {
+  width: 100px;
+}
+
+.space {
+  width: 310px;
+}
+
+
+

@@ -47,7 +47,7 @@ const thirdRow = {
   'Quote': [`'`, '"', 'э', 'Э'],
   'Enter': 'Enter'
 }
-  
+
 const fourthRow = {
   'ShiftLeft': 'Shift',
   'KeyZ': ['z', 'Z', 'я', 'Я'],
@@ -74,28 +74,34 @@ const fifthRow = {
   'ArrowDown': '↓',
   'ArrowRight': '→'
 };
-  
-  const virKey = document.querySelector(".vir-key")
-  
-  function renderKeyboard() {
-    const rows = [firstRow, secondRow, thirdRow, fourthRow, fifthRow];
-  
-    let keyboardHtml = '';
-  
-    for (const row of rows) {
-      keyboardHtml += '<div class="keyboard-row">';
-  
-      for (const [key, value] of Object.entries(row)) {
-        keyboardHtml += `
-          <div class="keyboard-key">${Array.isArray(value) ? value[0] : value}</div>
+
+const virKey = document.querySelector(".virtual-keyboard")
+
+
+function renderKeyboard() {
+  const rows = [firstRow, secondRow, thirdRow, fourthRow, fifthRow];
+
+  let keyboardHtml = `<p class="description">Клавиатура создана в операционной системе Linux</p>
+                        <p class="language">Для переключения языка комбинация: левыe alt + shift</p>
+                        <textarea class="textarea" id="textarea" cols="50" rows="5"></textarea>`;
+
+  for (const row of rows) {
+    keyboardHtml += '<div class="keyboard-row">';
+
+    for (const [key, value] of Object.entries(row)) {
+      keyboardHtml += `
+          <div class="keyboard-key ${key === 'Space' ? 'space' : ''} 
+          ${key === 'ShiftLeft' || key === 'ShiftRight' ? 'shift' : ''}">
+          ${Array.isArray(value) ? value[0] : value}</div>
         `;
-      }
-  
-      keyboardHtml += '</div>';
     }
-  
-    virKey.innerHTML = keyboardHtml;
+
+    keyboardHtml += '</div>';
   }
-  
-  
-  renderKeyboard();
+
+  virKey.innerHTML = keyboardHtml;
+}
+
+
+
+renderKeyboard();
