@@ -90,18 +90,30 @@ function renderKeyboard() {
 
     for (const [key, value] of Object.entries(row)) {
       keyboardHtml += `
-          <div class="keyboard-key ${key === 'Space' ? 'space' : ''} 
+          <div class="keyboard-key ${key} ${key === 'Space' ? 'space' : ''} 
           ${key === 'ShiftLeft' || key === 'ShiftRight' ? 'shift' : ''}">
-          ${Array.isArray(value) ? value[0] : value}</div>
-        `;
+          ${Array.isArray(value) ? value[0] : value}</div>`;
     }
 
     keyboardHtml += '</div>';
   }
 
   virKey.innerHTML = keyboardHtml;
+
+  document.addEventListener('keydown', (event) => {
+    const virtualKey = virKey.querySelector(`.${event.code}`);
+    if (virtualKey) {
+      virtualKey.classList.add('active');
+    }
+  });
+
+  document.addEventListener('keyup', (event) => {
+    const virtualKey = virKey.querySelector(`.${event.code}`);
+    if (virtualKey) {
+      virtualKey.classList.remove('active');
+    }
+  });
+
 }
-
-
 
 renderKeyboard();
