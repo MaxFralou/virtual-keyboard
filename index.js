@@ -66,7 +66,7 @@ const fourthRow = {
 const fifthRow = {
   'ControlLeft': 'Control',
   'AltLeft': 'Alt',
-  'Space': ['space', 'пробел'],
+  'Space': 'space',
   'AltRight': 'Alt',
   'ControlRight': 'Control',
   'ArrowLeft': '←',
@@ -141,5 +141,38 @@ function updateKeyboardText() {
   }
 }
 
+let isShift = false;
 
+document.addEventListener('keydown', (event) => {
+  if (event.code === 'ShiftLeft' || event.code === 'ShiftRight') {
+    isShift = true;
+    updateKeyboardTextShift()
 
+    document.addEventListener('keyup', (event) => {
+      if (event.code === 'ShiftLeft' || event.code === 'ShiftRight') {
+        isShift = false;
+        updateKeyboardTextShift();
+      }
+    })
+  }
+});
+
+function updateKeyboardTextShift() {
+  const rows = [firstRow, secondRow, thirdRow, fourthRow];
+
+  for (const row of rows) {
+    for (const [key, value] of Object.entries(row)) {
+      const keyElement = virKey.querySelector(`.${key}`);
+
+      if (Array.isArray(value)) {
+        let text;
+        if (isShift) {
+          text = isRussianLayout ? value[3] : value[1];
+        } else {
+          text = isRussianLayout ? value[2] : value[0];
+        }
+        keyElement.textContent = text;
+      }
+    }
+  }
+}
