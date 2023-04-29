@@ -18,9 +18,9 @@
   margin: 8px;
   text-align: center;
   line-height: 40px;
-  border: 1.5px solid gray;
   border-radius: 5px;
   background-color: lightgrey;
+  transition: all .1s;
 }
 
 .shift {
@@ -33,6 +33,7 @@
 
 .active {
   background-color: hotpink;
+  scale: .7;
 }
 
 

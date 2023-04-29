@@ -77,12 +77,11 @@ const fifthRow = {
 
 const virKey = document.querySelector(".virtual-keyboard")
 
-
 function renderKeyboard() {
   const rows = [firstRow, secondRow, thirdRow, fourthRow, fifthRow];
 
   let keyboardHtml = `<p class="description">Клавиатура создана в операционной системе Linux</p>
-                        <p class="language">Для переключения языка комбинация: левыe alt + shift</p>
+                        <p class="language">Для переключения языка комбинация: левый control + space</p>
                         <textarea class="textarea" id="textarea" cols="50" rows="5"></textarea>`;
 
   for (const row of rows) {
@@ -117,3 +116,30 @@ function renderKeyboard() {
 }
 
 renderKeyboard();
+
+let isRussianLayout = false;
+
+document.addEventListener('keydown', (event) => {
+  if (event.code === 'Space' && event.ctrlKey && !event.repeat) {
+    isRussianLayout = !isRussianLayout;
+    updateKeyboardText();
+  }
+});
+
+function updateKeyboardText() {
+  const rows = [firstRow, secondRow, thirdRow, fourthRow];
+
+  for (const row of rows) {
+    for (const [key, value] of Object.entries(row)) {
+      const keyElement = virKey.querySelector(`.${key}`);
+
+      if (Array.isArray(value)) {
+        const text = isRussianLayout ? value[2] : value[0];
+        keyElement.textContent = text;
+      }
+    }
+  }
+}
+
+
+
