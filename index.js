@@ -133,7 +133,7 @@ function updateKeyboardTextShift() {
         } else {
           text = isRussianLayout ? c : a;
         }
-        if (isCaps && /[a-zA-Z]/.test(text)) {
+        if (isCaps && /[a-zA-Zа-яА-ЯЁ]/.test(text)) {
           text = text.toLowerCase();
         }
 
@@ -142,23 +142,6 @@ function updateKeyboardTextShift() {
     });
   });
 }
-
-document.addEventListener('keydown', (event) => {
-  if (event.code === 'ShiftLeft' || event.code === 'ShiftRight') {
-    isShift = true;
-    // if (isCaps) {
-    //   updateKeyboardTextCaps();
-    // }
-    updateKeyboardTextShift();
-
-    document.addEventListener('keyup', (e) => {
-      if (e.code === 'ShiftLeft' || e.code === 'ShiftRight') {
-        isShift = false;
-        updateKeyboardTextCaps();
-      }
-    });
-  }
-});
 
 function updateKeyboardTextCaps() {
   const rows = [firstRow, secondRow, thirdRow, fourthRow];
@@ -189,6 +172,20 @@ function updateKeyboardTextCaps() {
 }
 
 document.addEventListener('keydown', (event) => {
+  if (event.code === 'ShiftLeft' || event.code === 'ShiftRight') {
+    isShift = true;
+    updateKeyboardTextShift();
+
+    document.addEventListener('keyup', (e) => {
+      if (e.code === 'ShiftLeft' || e.code === 'ShiftRight') {
+        isShift = false;
+        updateKeyboardTextCaps();
+      }
+    });
+  }
+});
+
+document.addEventListener('keydown', (event) => {
   if (event.code === 'Space' && event.ctrlKey && !event.repeat) {
     isRussianLayout = !isRussianLayout;
     updateKeyboardTextCaps();
@@ -205,13 +202,3 @@ document.addEventListener('keydown', (event) => {
     }
   }
 });
-
-// document.addEventListener('keyup', (event) => {
-//   const virtualKey = virKey.querySelector(`.${event.code}`);
-//   if (virtualKey) {
-//     if (event.code === 'ShiftLeft' || event.code === 'ShiftRight') {
-//       isShiftPressed = false;
-//       updateKeyboardTextCaps();
-//     }
-//   }
-// });
