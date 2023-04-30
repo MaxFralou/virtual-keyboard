@@ -75,6 +75,10 @@ const fifthRow = {
   ArrowRight: '→',
 };
 
+let isCaps = false;
+let isRussianLayout = false;
+let isShift = false;
+
 const virKey = document.querySelector('.virtual-keyboard');
 
 function renderKeyboard() {
@@ -99,45 +103,20 @@ function renderKeyboard() {
 
   document.addEventListener('keydown', (event) => {
     const virtualKey = virKey.querySelector(`.${event.code}`);
-    if (virtualKey) {
+    if (virtualKey && event.code !== 'CapsLock') {
       virtualKey.classList.add('active');
     }
   });
 
   document.addEventListener('keyup', (event) => {
     const virtualKey = virKey.querySelector(`.${event.code}`);
-    if (virtualKey) {
+    if (virtualKey && event.code !== 'CapsLock') {
       virtualKey.classList.remove('active');
     }
   });
 }
 
 renderKeyboard();
-
-let isRussianLayout = false;
-
-function updateKeyboardText() {
-  const rows = [firstRow, secondRow, thirdRow, fourthRow];
-
-  rows.forEach((row) => {
-    Object.entries(row).forEach(([key, value]) => {
-      const keyElement = virKey.querySelector(`.${key}`);
-      if (Array.isArray(value)) {
-        const text = isRussianLayout ? value[2] : value[0];
-        keyElement.textContent = text;
-      }
-    });
-  });
-}
-
-document.addEventListener('keydown', (event) => {
-  if (event.code === 'Space' && event.ctrlKey && !event.repeat) {
-    isRussianLayout = !isRussianLayout;
-    updateKeyboardText();
-  }
-});
-
-let isShift = false;
 
 function updateKeyboardTextShift() {
   const rows = [firstRow, secondRow, thirdRow, fourthRow];
@@ -154,6 +133,10 @@ function updateKeyboardTextShift() {
         } else {
           text = isRussianLayout ? c : a;
         }
+        if (isCaps && /[a-zA-Z]/.test(text)) {
+          text = text.toLowerCase();
+        }
+
         keyElement.textContent = text;
       }
     });
@@ -163,13 +146,72 @@ function updateKeyboardTextShift() {
 document.addEventListener('keydown', (event) => {
   if (event.code === 'ShiftLeft' || event.code === 'ShiftRight') {
     isShift = true;
+    // if (isCaps) {
+    //   updateKeyboardTextCaps();
+    // }
     updateKeyboardTextShift();
 
     document.addEventListener('keyup', (e) => {
       if (e.code === 'ShiftLeft' || e.code === 'ShiftRight') {
         isShift = false;
-        updateKeyboardTextShift();
+        updateKeyboardTextCaps();
       }
     });
   }
 });
+
+function updateKeyboardTextCaps() {
+  const rows = [firstRow, secondRow, thirdRow, fourthRow];
+
+  rows.forEach((row) => {
+    Object.keys(row).forEach((key) => {
+      const keyElement = virKey.querySelector(`.${key}`);
+
+      if (Array.isArray(row[key])) {
+        const [a, b, c, d] = row[key];
+        let text;
+        if (isRussianLayout && isCaps && /[a-zA-Zа-яА-ЯЁ]/.test(d)) {
+          text = d;
+        } else if (!isRussianLayout && isCaps && /[a-zA-Zа-яА-ЯЁ]/.test(a)) {
+          text = b;
+        } else {
+          text = isRussianLayout ? c : a;
+        }
+
+        if (isShift && /[a-zA-Z]/.test(text)) {
+          text = text.toLowerCase();
+        }
+
+        keyElement.textContent = text;
+      }
+    });
+  });
+}
+
+document.addEventListener('keydown', (event) => {
+  if (event.code === 'Space' && event.ctrlKey && !event.repeat) {
+    isRussianLayout = !isRussianLayout;
+    updateKeyboardTextCaps();
+  }
+});
+
+document.addEventListener('keydown', (event) => {
+  const virtualKey = virKey.querySelector(`.${event.code}`);
+  if (virtualKey) {
+    if (event.code === 'CapsLock') {
+      virtualKey.classList.toggle('active');
+      isCaps = !isCaps;
+      updateKeyboardTextCaps();
+    }
+  }
+});
+
+// document.addEventListener('keyup', (event) => {
+//   const virtualKey = virKey.querySelector(`.${event.code}`);
+//   if (virtualKey) {
+//     if (event.code === 'ShiftLeft' || event.code === 'ShiftRight') {
+//       isShiftPressed = false;
+//       updateKeyboardTextCaps();
+//     }
+//   }
+// });
