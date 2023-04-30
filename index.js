@@ -91,10 +91,7 @@ function renderKeyboard() {
   rows.forEach((row) => {
     keyboardHtml += '<div class="keyboard-row">';
     Object.entries(row).forEach(([key, value]) => {
-      keyboardHtml += `
-                      <div class="keyboard-key ${key} ${key === 'Space' ? 'space' : ''} 
-                      ${key === 'ShiftLeft' || key === 'ShiftRight' ? 'shift' : ''}">
-                      ${Array.isArray(value) ? value[0] : value}</div>`;
+      keyboardHtml += `<div class="keyboard-key ${key} ${key === 'Space' ? 'space' : ''}${key === 'ShiftLeft' || key === 'ShiftRight' ? 'shift' : ''}">${Array.isArray(value) ? value[0] : value}</div>`;
     });
     keyboardHtml += '</div>';
   });
@@ -219,3 +216,15 @@ function getLocalStorage() {
 getLocalStorage();
 
 window.addEventListener('load', getLocalStorage);
+
+const textarea = document.getElementById('textarea');
+
+textarea.addEventListener('keydown', (e) => {
+  if (!['Backspace', 'Enter', 'ShiftLeft', 'ShiftRight', 'AltLeft', 'AltLRight', 'ControlLeft', 'ControlRight', 'Tab', 'CapsLock', 'Space'].includes(e.code)) {
+    e.preventDefault();
+    const virtualKey = virKey.querySelector(`.${e.code}`);
+    if (virtualKey) {
+      textarea.value += virtualKey.textContent;
+    }
+  }
+});
