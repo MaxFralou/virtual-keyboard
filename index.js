@@ -202,3 +202,20 @@ document.addEventListener('keydown', (event) => {
     }
   }
 });
+
+function setLocalStorage() {
+  localStorage.setItem('isRussianLayout', isRussianLayout);
+}
+
+window.addEventListener('beforeunload', setLocalStorage);
+
+function getLocalStorage() {
+  if (localStorage.getItem('isRussianLayout')) {
+    isRussianLayout = localStorage.getItem('isRussianLayout') === 'true';
+    updateKeyboardTextCaps();
+  }
+}
+
+getLocalStorage();
+
+window.addEventListener('load', getLocalStorage);
