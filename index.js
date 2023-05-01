@@ -85,7 +85,7 @@ function renderKeyboard() {
   const rows = [firstRow, secondRow, thirdRow, fourthRow, fifthRow];
 
   let keyboardHtml = `<p class="description">Клавиатура создана в операционной системе Linux</p>
-                        <p class="language">Для переключения языка комбинация: левый control + space</p>
+                        <p class="language">Для переключения языка комбинация: control + space</p>
                         <textarea class="textarea" id="textarea" cols="50" rows="5"></textarea>`;
 
   rows.forEach((row) => {
@@ -220,11 +220,41 @@ window.addEventListener('load', getLocalStorage);
 const textarea = document.getElementById('textarea');
 
 textarea.addEventListener('keydown', (e) => {
-  if (!['Backspace', 'Enter', 'ShiftLeft', 'ShiftRight', 'AltLeft', 'AltLRight', 'ControlLeft', 'ControlRight', 'Tab', 'CapsLock', 'Space'].includes(e.code)) {
+  if (!['Backspace', 'Enter', 'ShiftLeft', 'ShiftRight', 'AltLeft', 'AltRight', 'ControlLeft', 'ControlRight', 'CapsLock', 'Space'].includes(e.code)) {
     e.preventDefault();
     const virtualKey = virKey.querySelector(`.${e.code}`);
-    if (virtualKey) {
+    if (virtualKey.textContent === 'Tab') textarea.value += '    ';
+    if (virtualKey && virtualKey.textContent !== 'Tab') {
       textarea.value += virtualKey.textContent;
     }
   }
+});
+
+const virKeys = document.querySelectorAll('.keyboard-key');
+
+virKeys.forEach((virK) => {
+  virK.addEventListener('click', (e) => {
+    if (virK.textContent !== 'CapsLock') virK.classList.add('active');
+    if (virK.textContent === 'CapsLock') {
+      isCaps = !isCaps;
+      virK.classList.toggle('active');
+      updateKeyboardTextCaps();
+    }
+    const virtualKey = e.target;
+    if (!['Backspace', 'Enter', 'Shift', 'Alt', 'Control', 'Tab', 'CapsLock', 'space'].includes(virtualKey.textContent)) {
+      textarea.value += virtualKey.textContent;
+    } else if (virtualKey.textContent === 'Backspace') {
+      textarea.value = textarea.value.slice(0, -1);
+    } else if (virtualKey.textContent === 'space') {
+      textarea.value += ' ';
+    } else if (virtualKey.textContent === 'Enter') {
+      textarea.value += '\n';
+    } else if (virtualKey.textContent === 'Tab') {
+      textarea.value += '    ';
+    }
+
+    setTimeout(() => {
+      if (virK.textContent !== 'CapsLock') virK.classList.remove('active');
+    }, 100);
+  });
 });
