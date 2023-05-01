@@ -21,6 +21,7 @@
   border-radius: 5px;
   background-color: lightgrey;
   transition: all .1s;
+  cursor: pointer;
 }
 
 .shift {
@@ -36,5 +37,7 @@
   scale: .7;
 }
 
-
+.keyboard-key:hover{
+  opacity: 0.7;
+}
 
